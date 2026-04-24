@@ -73,7 +73,9 @@ function App() {
           <p>
             Showing {filteredTransactions.length} of {transactions.length} transactions
           </p>
-          <TransactionTable transactions={filteredTransactions} />
+          <TransactionTable 
+            transactions={filteredTransactions} 
+            onDelete={fetchTransactions} />
         </>
       )}
     </div>

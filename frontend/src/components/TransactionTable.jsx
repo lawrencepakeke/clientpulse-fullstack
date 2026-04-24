@@ -1,6 +1,6 @@
 import TransactionRow from "./TransactionRow";
 
-function TransactionTable({ transactions }) {
+function TransactionTable({ transactions, onDelete}) {
   return (
     <table
       border="1"
@@ -24,6 +24,7 @@ function TransactionTable({ transactions }) {
           <TransactionRow
             key={transaction._id}
             transaction={transaction}
+            onDelete={onDelete}
           />
         ))}
       </tbody>
