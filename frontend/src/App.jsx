@@ -1,3 +1,4 @@
+import StatsPanel from "./components/StatsPanel";
 import { useEffect, useMemo, useState } from "react";
 import TransactionTable from "./components/TransactionTable";
 import TransactionForm from "./components/TransactionForm";
@@ -60,6 +61,8 @@ function App() {
         onCancelEdit={() => setEditingTransaction(null)}
       />
 
+      <StatsPanel transactions={transactions} />
+      
       <input
         type="text"
         placeholder="Search by client name..."
