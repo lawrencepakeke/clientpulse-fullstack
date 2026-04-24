@@ -1,22 +1,16 @@
-function TransactionRow({ transaction, onDelete }) {
+function TransactionRow({ transaction, onDelete, onEdit }) {
   const handleDelete = async () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this transaction?");
-
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/transactions/${transaction._id}`,
-        {
-          method: "DELETE"
-        }
-      );
+      const response = await fetch(`http://localhost:5000/api/transactions/${transaction._id}`, {
+        method: "DELETE"
+      });
 
-      if (!response.ok) {
-        throw new Error("Failed to delete transaction");
-      }
+      if (!response.ok) throw new Error("Failed to delete transaction");
 
-      onDelete(); // refresh table
+      onDelete();
     } catch (error) {
       alert(error.message);
     }
@@ -32,7 +26,8 @@ function TransactionRow({ transaction, onDelete }) {
       <td>{new Date(transaction.date).toLocaleDateString()}</td>
       <td>{transaction.source}</td>
       <td>
-        <button onClick={handleDelete} style={{ color: "red" }}>
+        <button onClick={() => onEdit(transaction)}>Edit</button>
+        <button onClick={handleDelete} style={{ color: "red", marginLeft: "0.5rem" }}>
           Delete
         </button>
       </td>

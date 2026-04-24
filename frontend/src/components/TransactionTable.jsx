@@ -1,13 +1,8 @@
 import TransactionRow from "./TransactionRow";
 
-function TransactionTable({ transactions, onDelete}) {
+function TransactionTable({ transactions, onDelete, onEdit }) {
   return (
-    <table
-      border="1"
-      cellPadding="10"
-      cellSpacing="0"
-      style={{ width: "100%", borderCollapse: "collapse", marginTop: "1rem" }}
-    >
+    <table border="1" cellPadding="10" cellSpacing="0" style={{ width: "100%", borderCollapse: "collapse", marginTop: "1rem" }}>
       <thead>
         <tr>
           <th>Client</th>
@@ -17,6 +12,7 @@ function TransactionTable({ transactions, onDelete}) {
           <th>Amount</th>
           <th>Date</th>
           <th>Source</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -25,6 +21,7 @@ function TransactionTable({ transactions, onDelete}) {
             key={transaction._id}
             transaction={transaction}
             onDelete={onDelete}
+            onEdit={onEdit}
           />
         ))}
       </tbody>

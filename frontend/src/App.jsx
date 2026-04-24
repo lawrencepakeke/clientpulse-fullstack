@@ -7,6 +7,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [editingTransaction, setEditingTransaction] = useState(null);
 
   const fetchTransactions = async () => {
     try {
@@ -50,7 +51,14 @@ function App() {
       <h1>ClientPulse</h1>
       <p>Client transaction analytics dashboard</p>
 
-      <TransactionForm onTransactionCreated={fetchTransactions} />
+      <TransactionForm 
+        onTransactionSaved={() => {
+          fetchTransactions();
+          setEditingTransaction(null);
+        }}
+        editingTransaction={editingTransaction}
+        onCancelEdit={() => setEditingTransaction(null)}
+      />
 
       <input
         type="text"
@@ -75,7 +83,9 @@ function App() {
           </p>
           <TransactionTable 
             transactions={filteredTransactions} 
-            onDelete={fetchTransactions} />
+            onDelete={fetchTransactions} 
+            onEdit={setEditingTransaction}
+          />
         </>
       )}
     </div>

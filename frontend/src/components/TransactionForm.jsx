@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function TransactionForm({ onTransactionCreated }) {
+function TransactionForm({ onTransactionSaved, editingTransaction, onCancelEdit }) {
   const [clients, setClients] = useState([]);
   const [services, setServices] = useState([]);
 
@@ -11,99 +11,77 @@ function TransactionForm({ onTransactionCreated }) {
     source: ""
   });
 
-  const [loadingOptions, setLoadingOptions] = useState(true);
-  const [submitError, setSubmitError] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-
   useEffect(() => {
     const fetchOptions = async () => {
-      try {
-        const [clientsResponse, servicesResponse] = await Promise.all([
-          fetch("http://localhost:5000/api/clients"),
-          fetch("http://localhost:5000/api/services")
-        ]);
+      const clientsRes = await fetch("http://localhost:5000/api/clients");
+      const servicesRes = await fetch("http://localhost:5000/api/services");
 
-        if (!clientsResponse.ok || !servicesResponse.ok) {
-          throw new Error("Failed to load form options");
-        }
-
-        const clientsData = await clientsResponse.json();
-        const servicesData = await servicesResponse.json();
-
-        setClients(clientsData);
-        setServices(servicesData);
-      } catch (error) {
-        setSubmitError(error.message);
-      } finally {
-        setLoadingOptions(false);
-      }
+      setClients(await clientsRes.json());
+      setServices(await servicesRes.json());
     };
 
     fetchOptions();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  useEffect(() => {
+    if (editingTransaction) {
+      setFormData({
+        clientId: editingTransaction.clientId?._id || editingTransaction.clientId,
+        serviceId: editingTransaction.serviceId?._id || editingTransaction.serviceId,
+        amount: editingTransaction.amount,
+        source: editingTransaction.source || ""
+      });
+    }
+  }, [editingTransaction]);
 
+  const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [e.target.name]: e.target.value
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitError("");
-    setSubmitting(true);
 
-    try {
-      const response = await fetch("http://localhost:5000/api/transactions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          ...formData,
-          amount: Number(formData.amount)
-        })
-      });
+    const url = editingTransaction
+      ? `http://localhost:5000/api/transactions/${editingTransaction._id}`
+      : "http://localhost:5000/api/transactions";
 
-      if (!response.ok) {
-        throw new Error("Failed to create transaction");
-      }
+    const method = editingTransaction ? "PUT" : "POST";
 
-      setFormData({
-        clientId: "",
-        serviceId: "",
-        amount: "",
-        source: ""
-      });
+    const response = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        ...formData,
+        amount: Number(formData.amount)
+      })
+    });
 
-      onTransactionCreated();
-    } catch (error) {
-      setSubmitError(error.message);
-    } finally {
-      setSubmitting(false);
+    if (!response.ok) {
+      alert("Failed to save transaction");
+      return;
     }
-  };
 
-  if (loadingOptions) {
-    return <p>Loading form options...</p>;
-  }
+    setFormData({
+      clientId: "",
+      serviceId: "",
+      amount: "",
+      source: ""
+    });
+
+    onTransactionSaved();
+  };
 
   return (
     <div style={{ marginTop: "2rem", marginBottom: "2rem" }}>
-      <h2>Create New Transaction</h2>
-
-      {submitError && <p style={{ color: "red" }}>{submitError}</p>}
+      <h2>{editingTransaction ? "Edit Transaction" : "Create New Transaction"}</h2>
 
       <form onSubmit={handleSubmit} style={{ display: "grid", gap: "1rem", maxWidth: "400px" }}>
-        <select
-          name="clientId"
-          value={formData.clientId}
-          onChange={handleChange}
-          required
-        >
+        <select name="clientId" value={formData.clientId} onChange={handleChange} required>
           <option value="">Select client</option>
           {clients.map((client) => (
             <option key={client._id} value={client._id}>
@@ -112,12 +90,7 @@ function TransactionForm({ onTransactionCreated }) {
           ))}
         </select>
 
-        <select
-          name="serviceId"
-          value={formData.serviceId}
-          onChange={handleChange}
-          required
-        >
+        <select name="serviceId" value={formData.serviceId} onChange={handleChange} required>
           <option value="">Select service</option>
           {services.map((service) => (
             <option key={service._id} value={service._id}>
@@ -138,14 +111,20 @@ function TransactionForm({ onTransactionCreated }) {
         <input
           type="text"
           name="source"
-          placeholder="Source (e.g. Website, Referral)"
+          placeholder="Source"
           value={formData.source}
           onChange={handleChange}
         />
 
-        <button type="submit" disabled={submitting}>
-          {submitting ? "Creating..." : "Create Transaction"}
+        <button type="submit">
+          {editingTransaction ? "Update Transaction" : "Create Transaction"}
         </button>
+
+        {editingTransaction && (
+          <button type="button" onClick={onCancelEdit}>
+            Cancel Edit
+          </button>
+        )}
       </form>
     </div>
   );
