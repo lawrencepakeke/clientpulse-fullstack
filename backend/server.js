@@ -18,7 +18,7 @@ app.use(express.json());
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/api/services", serviceRoutes);
-app.use("/api/stats", statsRoutes);
+app.use("/api/stats", statsRoutes);>
 
 app.get("/", (req, res) => {
   res.json({ message: "Backend API is running" });
