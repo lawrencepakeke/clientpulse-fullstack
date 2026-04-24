@@ -68,8 +68,7 @@ export const updateTransaction = async (req, res) => {
 
     const updatedTransaction = await Transaction.findByIdAndUpdate(
       req.params.id,
-      { clientId, serviceId, amount, date, source },
-      { new: true, runValidators: true }
+      { returnDocument: "after" }
     );
 
     if (!updatedTransaction) {
