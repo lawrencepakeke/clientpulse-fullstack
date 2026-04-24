@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import TransactionTable from "./components/TransactionTable";
+import TransactionForm from "./components/TransactionForm";
 
 function App() {
   const [transactions, setTransactions] = useState([]);
@@ -48,6 +49,8 @@ function App() {
     <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
       <h1>ClientPulse</h1>
       <p>Client transaction analytics dashboard</p>
+
+      <TransactionForm onTransactionCreated={fetchTransactions} />
 
       <input
         type="text"
