@@ -8,7 +8,10 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSource, setSelectedSource] = useState("");
   const [editingTransaction, setEditingTransaction] = useState(null);
+
 
   const fetchTransactions = async () => {
     try {
@@ -39,13 +42,23 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  const categories = [...new Set(transactions.map(t => t.serviceId?.category))];
+  const sources = [...new Set(transactions.map(t => t.source))];
+
   const filteredTransactions = useMemo(() => {
-    return transactions.filter((transaction) =>
-      transaction.clientId?.name
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase())
-    );
-  }, [transactions, searchTerm]);
+    return transactions
+      .filter((t) =>
+        t.clientId?.name
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase())
+      )
+      .filter((t) =>
+        selectedCategory ? t.serviceId?.category === selectedCategory : true
+      )
+      .filter((t) =>
+        selectedSource ? t.source === selectedSource : true
+      );
+  }, [transactions, searchTerm, selectedCategory, selectedSource]);
 
   return (
     <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
@@ -60,9 +73,31 @@ function App() {
         editingTransaction={editingTransaction}
         onCancelEdit={() => setEditingTransaction(null)}
       />
-
-      <StatsPanel transactions={transactions} />
       
+      <StatsPanel transactions={transactions} />
+      <select
+        value={selectedCategory}
+        onChange={(e) => setSelectedCategory(e.target.value)}
+      >
+        <option value="">All Categories</option>
+        {categories.map((cat, i) => (
+          <option key={i} value={cat}>
+            {cat}
+          </option>
+        ))}
+      </select>
+
+      <select
+        value={selectedSource}
+        onChange={(e) => setSelectedSource(e.target.value)}
+      >
+        <option value="">All Sources</option>
+        {sources.map((src, i) => (
+          <option key={i} value={src}>
+            {src}
+          </option>
+        ))}
+      </select>
       <input
         type="text"
         placeholder="Search by client name..."
