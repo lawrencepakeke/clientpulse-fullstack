@@ -1,3 +1,4 @@
+import authRoutes from "./routes/authRoutes.js";
 import transactionRoutes from "./routes/transactionRoutes.js";
 import clientRoutes from "./routes/clientRoutes.js";
 import serviceRoutes from "./routes/serviceRoutes.js";
@@ -15,6 +16,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/api/services", serviceRoutes);
