@@ -62,14 +62,26 @@ function App() {
       );
   }, [transactions, searchTerm, selectedCategory, selectedSource]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+  };
+
+
   if (!user) {
     return <Login onLogin={setUser} />;
   }
-  
+
   return (
     <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
       <h1>ClientPulse</h1>
       <p>Client transaction analytics dashboard</p>
+
+      <div style={{ marginBottom: "1rem" }}>
+        <p>Logged in as: {user.name}</p>
+        <button onClick={handleLogout}>Logout</button>
+      </div>
+
 
       <TransactionForm 
         onTransactionSaved={() => {
