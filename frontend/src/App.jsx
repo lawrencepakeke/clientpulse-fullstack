@@ -1,3 +1,4 @@
+import Login from "./components/Login";
 import StatsPanel from "./components/StatsPanel";
 import { useEffect, useMemo, useState } from "react";
 import TransactionTable from "./components/TransactionTable";
@@ -7,11 +8,12 @@ function App() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [user, setUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSource, setSelectedSource] = useState("");
   const [editingTransaction, setEditingTransaction] = useState(null);
-
+  
 
   const fetchTransactions = async () => {
     try {
@@ -60,6 +62,10 @@ function App() {
       );
   }, [transactions, searchTerm, selectedCategory, selectedSource]);
 
+  if (!user) {
+    return <Login onLogin={setUser} />;
+  }
+  
   return (
     <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
       <h1>ClientPulse</h1>
