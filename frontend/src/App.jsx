@@ -1,3 +1,4 @@
+import "./App.css";
 import Login from "./components/Login";
 import StatsPanel from "./components/StatsPanel";
 import { useEffect, useMemo, useState } from "react";
@@ -73,14 +74,21 @@ function App() {
   }
 
   return (
-    <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
-      <h1>ClientPulse</h1>
-      <p>Client transaction analytics dashboard</p>
+    <div className="app-shell">
+      <div className="dashboard">
+        <div className="header">
+        <div className="title">
+          <h1>ClientPulse</h1>
+          <p>Client transaction analytics dashboard</p>
+        </div>
 
-      <div style={{ marginBottom: "1rem" }}>
-        <p>Logged in as: {user.name}</p>
-        <button onClick={handleLogout}>Logout</button>
+        <div className="card">
+          <p>Logged in as: {user.name}</p>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
       </div>
+
+    
 
 
       <TransactionForm 
@@ -145,6 +153,8 @@ function App() {
         </>
       )}
     </div>
+    </div>
+
   );
 }
 
