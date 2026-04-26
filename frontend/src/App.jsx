@@ -78,8 +78,12 @@ function App() {
       <div className="dashboard">
         <div className="header">
         <div className="title">
+          <span className="eyebrow">Business Analytics Dashboard</span>
           <h1>ClientPulse</h1>
-          <p>Client transaction analytics dashboard</p>
+          <p>
+            Track client transactions, analyze revenue patterns, and identify which services,
+            clients, and sources are driving business performance.
+          </p>
         </div>
 
         <div className="card">
@@ -88,7 +92,14 @@ function App() {
         </div>
       </div>
 
-    
+    <div className="card intro-card">
+      <h2>How to use ClientPulse</h2>
+      <p>
+        Use the form below to create or update a transaction. The dashboard automatically
+        calculates revenue insights from your data. You can search by client name and filter
+        transactions by service category or lead source to explore business performance.
+      </p>
+    </div>
 
 
       <TransactionForm 
